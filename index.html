@@ -13,12 +13,14 @@
       text-align: center;
       font-family: sans-serif;
       background-color: #fafafa;
+      color: #000;
     }
 
     .card {
       width: 350px;
       height: 200px;
       margin: auto;
+      margin-top: 30px;
       padding: 20px;
       background: white;
       border: 1px solid gray;
@@ -34,31 +36,51 @@
       font-size: 7em;
       line-height: 1.3;
     }
+
+    footer {
+      padding-top: 40px;
+      font-size: .7em;
+      color: #484848;
+    }
   </style>
 </head>
 <body>
   <section>
     <h1 id="project-name">loading...</h1>
-    <h3 id="project-description">...</h3>
+    <div id="project-description">...</div>
     <div class="card">
       <div>Current temperature</div>
       <div class="current-temperature">...</div>
     </div>
   </section>
+  <footer>
+      Data colected by <a href="https://www.facebook.com/brunofuentess" target="_blank">Bruno Fuentes</a> at <a href="https://thingspeak.com/channels/157228/" target="_blank">thingspeak</a>
+
+  </footer>
   <script type="text/javascript">
     const projectName = document.getElementById('project-name')
     const projectDescription = document.getElementById('project-description')
     const currentTemperature = document.querySelector('.current-temperature')
+    const card = document.querySelector('.card')
 
-    fetch('https://thingspeak.com/channels/157228/field/1.json')
-      .then((r) => r.json())
-      .then((data) => {
-        projectName.innerHTML = data.channel.name
-        projectDescription.innerHTML = data.channel.description
-        const size = data.feeds.length
-        const current = data.feeds[size - 1]
-        currentTemperature.innerHTML = Number(current.field1).toString() + '°'
-      })
+    function fetchData() {
+      fetch('https://thingspeak.com/channels/157228/field/1.json')
+        .then((r) => r.json())
+        .then((data) => {
+          projectName.innerHTML = data.channel.name
+          projectDescription.innerHTML = data.channel.description
+          const size = data.feeds.length
+          const current = data.feeds[size - 1]
+          currentTemperature.innerHTML = Number(current.field1).toString() + '°'
+        })
+    }
+
+    card.addEventListener('click', function(){
+      currentTemperature.innerHTML = '...'
+      fetchData()
+    })
+
+    fetchData()
   </script>
 </body>
 </html>
